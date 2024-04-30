@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-p
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx-p
+    spec:
+      containers:
+        - name: nginx
+          image: image-registry.openshift-image-registry.svc:5000/test-login/reverse-proxy@sha256:25825a8385df73220d1c2515b1b81883f87547473e311c2fa0c77155b7ba63e8
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx-p
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

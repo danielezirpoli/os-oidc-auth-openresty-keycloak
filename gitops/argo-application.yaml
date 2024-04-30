@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-login-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: test-login
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: application
+    repoURL: https://github.com/danielezirpoli/os-oidc-auth-openresty-keycloak
+    targetRevision: main
+    directory:
+      recurse: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - PruneLast=true
+    - CreateNamespace=true
